@@ -1,3 +1,4 @@
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -10,10 +11,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.interop.UIKitView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.ComposeUIViewController
 import kotlinx.cinterop.ExperimentalForeignApi
+import org.jetbrains.skia.Image
 import platform.UIKit.UIView
 import platform.UIKit.UIViewController
 
@@ -35,7 +38,8 @@ actual fun takePictureNativeView(imageHandler: ImageHandler) {
 }
 
 fun passInByteArray(byteArray: ByteArray) {
-    myImageHandler.onImageBytesCaptured(byteArray)
+    val imageBitmap = Image.makeFromEncoded(byteArray).toComposeImageBitmap()
+    myImageHandler.onImageBitmapCaptured(imageBitmap)
 }
 
 fun onCameraCancelled() {

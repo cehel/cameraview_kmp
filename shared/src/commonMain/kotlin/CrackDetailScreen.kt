@@ -12,11 +12,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
-import org.jetbrains.skia.Image
 
 @Composable
 fun CrackDetailScreen() {
@@ -53,12 +51,10 @@ fun MyImageDisplay(viewModel: CrackDetailViewModel) {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Here is the image")
         imageBytes?.let {
-            Text("Image Received: ${it.size}")
-            val image = Image.makeFromEncoded(it)
+            Text("Image Received:")
             Image(
-                bitmap = image.toComposeImageBitmap(),
+                bitmap = it,
                 contentDescription = null
             )
         }

@@ -27,6 +27,7 @@ kotlin {
                 implementation(compose.material)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
+                implementation("org.jetbrains.skiko:skiko:0.7.85.4")
                 api("dev.icerock.moko:mvvm-core:0.16.1")
                 api("dev.icerock.moko:mvvm-compose:0.16.1")
             }
@@ -36,6 +37,7 @@ kotlin {
                 api("androidx.activity:activity-compose:1.7.2")
                 api("androidx.appcompat:appcompat:1.6.1")
                 api("androidx.core:core-ktx:1.10.1")
+                implementation ("androidx.compose.ui:ui:1.5.4")
                 implementation("io.ktor:ktor-client-okhttp:2.3.5")
             }
         }

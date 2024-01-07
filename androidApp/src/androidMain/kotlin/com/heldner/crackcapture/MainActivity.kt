@@ -1,6 +1,6 @@
 package com.heldner.cameraview
 
-import CrackCaptureEntryScreen
+import CrackDetailScreen
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         //val chatGptApiClient = ChatGptApiClient("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","https://api.openai.com/v1/chat/completions")
 
         setContent {
-            CrackCaptureEntryScreen()
+            CrackDetailScreen()
         }
     }
 }
