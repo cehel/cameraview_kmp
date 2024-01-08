@@ -12,15 +12,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +25,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -38,24 +33,29 @@ import java.util.UUID
 
 actual fun getPlatformName(): String = "Android"
 
+
 @Composable
-actual fun takePictureNativeView(imageHandler: ImageHandler) {
+actual fun takePictureNativeView(imageHandler: ImageHandler, redraw: Int) {
     val context = LocalContext.current
     val uuid = UUID.randomUUID()
     val file = context.createImageFile()
     val uri = FileProvider.getUriForFile(
-        Objects.requireNonNull(context),
-        context.packageName + ".provider", file
+        Objects.requireNonNull(context), context.packageName + ".provider", file
     )
 
     var capturedImageUri by remember {
         mutableStateOf<Uri>(Uri.EMPTY)
     }
 
-    val cameraLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
-            capturedImageUri = uri
+    val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
+        capturedImageUri = uri
+        if (capturedImageUri.path?.isNotEmpty() == true) {
+            val imageBitmap = loadImageBitmap(capturedImageUri, context)
+            imageBitmap?.let {
+                imageHandler.onImageBitmapCaptured(imageBitmap.asImageBitmap())
+            }
         }
+    }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -69,32 +69,24 @@ actual fun takePictureNativeView(imageHandler: ImageHandler) {
     }
 
     Column(
-        Modifier
-            .fillMaxSize()
-            .padding(10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        Modifier.fillMaxSize().padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LaunchedEffect(uuid) {
-            if (capturedImageUri.path?.isNotEmpty() != true) {
-                val permissionCheckResult =
-                    ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
-                if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
-                    cameraLauncher.launch(uri)
-                } else {
-                    // Request a permission
-                    permissionLauncher.launch(Manifest.permission.CAMERA)
-                }
+        LaunchedEffect(redraw) {
+
+            val permissionCheckResult =
+                ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+            if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
+                cameraLauncher.launch(uri)
+            } else {
+                // Request a permission
+                permissionLauncher.launch(Manifest.permission.CAMERA)
             }
-        //LaunchedEffect(uuid) {
+
+
+            //LaunchedEffect(uuid) {
         }
 
 
-        if (capturedImageUri.path?.isNotEmpty() == true) {
-            val imageBitmap = loadImageBitmap(capturedImageUri, context)
-            imageBitmap?.let {
-                imageHandler.onImageBitmapCaptured(imageBitmap.asImageBitmap())
-            }
-        }
     }
 }
 

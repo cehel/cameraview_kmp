@@ -28,7 +28,7 @@ lateinit var myImageHandler: ImageHandler
 
 @OptIn(ExperimentalForeignApi::class)
 @Composable
-actual fun takePictureNativeView(imageHandler: ImageHandler) {
+actual fun takePictureNativeView(imageHandler: ImageHandler, redraw: Int) {
     myImageHandler = imageHandler
     UIKitView(
         factory = uiFactory,

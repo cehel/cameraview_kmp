@@ -8,8 +8,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -23,22 +27,29 @@ fun CrackDetailScreen() {
 
     val showCamera by viewModel.showCameraView.collectAsState()
 
+    var buttonClick =  remember {
+        mutableStateOf<Int>(0)
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
-        Button(onClick = { viewModel.showCameraView() }) {
+        Button(onClick = {
+            viewModel.showCameraView()
+            buttonClick.value++
+        }) {
             Text("Capture photo")
         }
         if (showCamera) {
-            CameraScreen(viewModel)
+            CameraScreen(viewModel, buttonClick.value)
         }
         MyImageDisplay(viewModel)
     }
 }
 
 @Composable
-fun CameraScreen(viewModel: CrackDetailViewModel) {
+fun CameraScreen(viewModel: CrackDetailViewModel, buttonClick: Int) {
     Column(modifier = Modifier.height(50.dp).fillMaxWidth()) {
         // Your overlay content goes here$
-        takePictureNativeView(viewModel)
+        takePictureNativeView(viewModel, buttonClick)
     }
 }
 
@@ -62,6 +73,7 @@ fun MyImageDisplay(viewModel: CrackDetailViewModel) {
 }
 
 @Composable
-expect fun takePictureNativeView(imageHandler: ImageHandler)
+expect fun takePictureNativeView(imageHandler: ImageHandler, redraw: Int = 0)
 
 expect fun getPlatformName(): String
+
