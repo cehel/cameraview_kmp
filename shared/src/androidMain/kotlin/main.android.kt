@@ -29,7 +29,6 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Objects
-import java.util.UUID
 
 actual fun getPlatformName(): String = "Android"
 
@@ -37,7 +36,6 @@ actual fun getPlatformName(): String = "Android"
 @Composable
 actual fun takePictureNativeView(imageHandler: ImageHandler, redraw: Int) {
     val context = LocalContext.current
-    val uuid = UUID.randomUUID()
     val file = context.createImageFile()
     val uri = FileProvider.getUriForFile(
         Objects.requireNonNull(context), context.packageName + ".provider", file
@@ -48,13 +46,18 @@ actual fun takePictureNativeView(imageHandler: ImageHandler, redraw: Int) {
     }
 
     val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
-        capturedImageUri = uri
-        if (capturedImageUri.path?.isNotEmpty() == true) {
-            val imageBitmap = loadImageBitmap(capturedImageUri, context)
-            imageBitmap?.let {
-                imageHandler.onImageBitmapCaptured(imageBitmap.asImageBitmap())
+        if (it) {
+            capturedImageUri = uri
+            if (capturedImageUri.path?.isNotEmpty() == true) {
+                val imageBitmap = loadImageBitmap(capturedImageUri, context)
+                imageBitmap?.let {
+                    imageHandler.onImageBitmapCaptured(imageBitmap.asImageBitmap())
+                }
             }
+        } else {
+            imageHandler.onCancelled()
         }
+
     }
 
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -81,12 +84,7 @@ actual fun takePictureNativeView(imageHandler: ImageHandler, redraw: Int) {
                 // Request a permission
                 permissionLauncher.launch(Manifest.permission.CAMERA)
             }
-
-
-            //LaunchedEffect(uuid) {
         }
-
-
     }
 }
 
