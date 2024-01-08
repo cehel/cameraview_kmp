@@ -2,9 +2,8 @@ import androidx.compose.ui.graphics.ImageBitmap
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.jetbrains.skia.Bitmap
 
-class CrackDetailViewModel : ViewModel(), ImageHandler {
+class CameraViewViewModel : ViewModel(), ImageHandler {
     private val _imageBytes = MutableStateFlow<ImageBitmap?>(null)
     val imageBytes: StateFlow<ImageBitmap?> = _imageBytes
 

@@ -8,12 +8,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -23,7 +21,7 @@ import dev.icerock.moko.mvvm.compose.viewModelFactory
 @Composable
 fun CrackDetailScreen() {
 
-    val viewModel = getViewModel(Unit, viewModelFactory { CrackDetailViewModel() })
+    val viewModel = getViewModel(Unit, viewModelFactory { CameraViewViewModel() })
 
     val showCamera by viewModel.showCameraView.collectAsState()
 
@@ -46,7 +44,7 @@ fun CrackDetailScreen() {
 }
 
 @Composable
-fun CameraScreen(viewModel: CrackDetailViewModel, buttonClick: Int) {
+fun CameraScreen(viewModel: CameraViewViewModel, buttonClick: Int) {
     Column(modifier = Modifier.height(50.dp).fillMaxWidth()) {
         // Your overlay content goes here$
         takePictureNativeView(viewModel, buttonClick)
@@ -54,7 +52,7 @@ fun CameraScreen(viewModel: CrackDetailViewModel, buttonClick: Int) {
 }
 
 @Composable
-fun MyImageDisplay(viewModel: CrackDetailViewModel) {
+fun MyImageDisplay(viewModel: CameraViewViewModel) {
     val imageBytes by viewModel.imageBytes.collectAsState()
     Column(
         modifier = Modifier
