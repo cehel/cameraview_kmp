@@ -1,10 +1,8 @@
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +27,8 @@ fun CrackDetailScreen() {
         mutableStateOf<Int>(0)
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        PhotoCardList(viewModel)
         Button(onClick = {
             viewModel.showCameraView()
             buttonClick.value++
@@ -39,7 +38,17 @@ fun CrackDetailScreen() {
         if (showCamera) {
             CameraScreen(viewModel, buttonClick.value)
         }
-        MyImageDisplay(viewModel)
+
+    }
+}
+
+@Composable
+private fun PhotoCardList(viewModel: CameraViewViewModel) {
+    val photos by viewModel.photoInfos.collectAsState()
+    LazyRow {
+        items(photos.size) {
+            PhotoCard(photos[it])
+        }
     }
 }
 
@@ -51,24 +60,7 @@ fun CameraScreen(viewModel: CameraViewViewModel, buttonClick: Int) {
     }
 }
 
-@Composable
-fun MyImageDisplay(viewModel: CameraViewViewModel) {
-    val imageBytes by viewModel.imageBytes.collectAsState()
-    Column(
-        modifier = Modifier
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        imageBytes?.let {
-            Text("Image Received:")
-            Image(
-                bitmap = it,
-                contentDescription = null
-            )
-        }
-    }
-}
+
 
 @Composable
 expect fun takePictureNativeView(imageHandler: ImageHandler, redraw: Int = 0)
