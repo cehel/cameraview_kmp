@@ -19,6 +19,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import model.PhotoInfo
+import ui.rose
 
 @Composable
 fun PhotoCard(photo: PhotoInfo) {
@@ -51,7 +52,7 @@ fun PhotoCard(photo: PhotoInfo) {
                     Text(
                         text = "xx",
                         style = TextStyle(
-                            color = Color.Blue,
+                            color = rose,
                             fontSize = 16.sp
                         )
                     )
@@ -59,7 +60,7 @@ fun PhotoCard(photo: PhotoInfo) {
                 IconButton(
                     onClick = { },
                     modifier = Modifier.background(
-                        color = Color.Blue,
+                        color = rose,
                         shape = RoundedCornerShape(10.dp)
                     )
                 ) {

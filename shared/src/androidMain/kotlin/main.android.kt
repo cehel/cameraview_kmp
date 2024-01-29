@@ -72,7 +72,9 @@ actual fun takePictureNativeView(imageHandler: ImageHandler, redraw: Int) {
     }
 
     Column(
-        Modifier.fillMaxSize().padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally
+        Modifier
+            .fillMaxSize()
+            .padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LaunchedEffect(redraw) {
 
@@ -89,11 +91,9 @@ actual fun takePictureNativeView(imageHandler: ImageHandler, redraw: Int) {
 }
 
 fun loadImageBitmap(imageUri: Uri, context: Context): Bitmap? {
-    var bitmap: Bitmap? = null
-
     // Load bitmap in a side-effect
 
-    bitmap = if (Build.VERSION.SDK_INT < 28) {
+    var bitmap = if (Build.VERSION.SDK_INT < 28) {
         MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
     } else {
         val source = ImageDecoder.createSource(context.contentResolver, imageUri)
@@ -116,3 +116,4 @@ fun Context.createImageFile(): File {
 
 @Composable
 fun MainView() = CrackDetailScreen()
+

@@ -39,6 +39,8 @@ kotlin {
                 api("androidx.core:core-ktx:1.10.1")
                 implementation ("androidx.compose.ui:ui:1.5.4")
                 implementation("io.ktor:ktor-client-okhttp:2.3.5")
+                api(compose.preview)
+                api(compose.uiTooling)
             }
         }
         val iosX64Main by getting

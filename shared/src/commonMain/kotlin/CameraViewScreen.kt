@@ -10,11 +10,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
+import model.PhotoInfo
 
 @Composable
 fun CrackDetailScreen() {
@@ -22,29 +26,61 @@ fun CrackDetailScreen() {
     val viewModel = getViewModel(Unit, viewModelFactory { CameraViewViewModel() })
 
     val showCamera by viewModel.showCameraView.collectAsState()
+    val photos by viewModel.photoInfos.collectAsState()
 
-    var buttonClick =  remember {
+    var buttonClick: Int by rememberSaveable {
         mutableStateOf<Int>(0)
     }
 
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        PhotoCardList(viewModel)
-        Button(onClick = {
+    val imageHandler = remember {
+        object : ImageHandler {
+            override fun onImageBitmapCaptured(bitmap: ImageBitmap) =
+                viewModel.onImageBitmapCaptured(bitmap)
+
+            override fun onCancelled() = viewModel.onCaptureCancelled()
+        }
+    }
+
+    CrackDetailContent(
+        showCamera = showCamera,
+        photos = photos,
+        onOpenCameraButtonClicked = {
             viewModel.showCameraView()
-            buttonClick.value++
+            buttonClick++
+        },
+        buttonClick = buttonClick,
+        imageHandler = imageHandler
+    )
+
+
+}
+
+@Composable
+fun CrackDetailContent(
+    showCamera: Boolean,
+    photos: List<PhotoInfo>,
+    onOpenCameraButtonClicked: () -> Unit,
+    buttonClick: Int,
+    imageHandler: ImageHandler
+) {
+    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        PhotoCardList(photos)
+        Button(onClick = {
+            onOpenCameraButtonClicked.invoke()
         }) {
             Text("Capture photo")
         }
         if (showCamera) {
-            CameraScreen(viewModel, buttonClick.value)
+            CameraScreen(
+                buttonClick,
+                imageHandler
+            )
         }
-
     }
 }
 
 @Composable
-private fun PhotoCardList(viewModel: CameraViewViewModel) {
-    val photos by viewModel.photoInfos.collectAsState()
+private fun PhotoCardList(photos: List<PhotoInfo>) {
     LazyRow {
         items(photos.size) {
             PhotoCard(photos[it])
@@ -53,13 +89,16 @@ private fun PhotoCardList(viewModel: CameraViewViewModel) {
 }
 
 @Composable
-fun CameraScreen(viewModel: CameraViewViewModel, buttonClick: Int) {
+fun CameraScreen(
+    buttonClick: Int,
+    imageHandler: ImageHandler
+) {
     Column(modifier = Modifier.height(50.dp).fillMaxWidth()) {
         // Your overlay content goes here$
-        takePictureNativeView(viewModel, buttonClick)
+
+        takePictureNativeView(imageHandler, buttonClick)
     }
 }
-
 
 
 @Composable
