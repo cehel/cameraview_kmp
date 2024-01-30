@@ -2,6 +2,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.tooling.preview.Preview
 import model.PhotoInfo
+import view.photolist.ImageHandler
+import view.photolist.PhotoCard
+import view.photolist.PhotoListScreenContent
 
 @Preview
 @Composable
@@ -11,7 +14,7 @@ fun PreviewPhotoList() = PhotoCard(
 
 @Preview
 @Composable
-fun PreviewCrackContent() = CrackDetailContent(
+fun PreviewCrackContent() = PhotoListScreenContent(
     showCamera = false,
     photos = listOf(
         createPhotoInfo("Test"),

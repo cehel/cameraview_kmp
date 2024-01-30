@@ -1,9 +1,7 @@
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -19,6 +17,8 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import org.jetbrains.skia.Image
 import platform.UIKit.UIView
 import platform.UIKit.UIViewController
+import view.photolist.ImageHandler
+import view.photolist.PhotoListScreen
 
 
 actual fun getPlatformName(): String = "iOS"
@@ -57,7 +57,7 @@ fun MainViewController(createCameraView: () -> UIView): UIViewController =
                 .windowInsetsPadding(WindowInsets.systemBars),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CrackDetailScreen()
+            PhotoListScreen()
             //CrackCaptureEntryScreen()
             Text("How to use SwiftUI inside Compose Multiplatform")
         }

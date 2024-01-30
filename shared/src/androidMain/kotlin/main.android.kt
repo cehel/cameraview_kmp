@@ -25,6 +25,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import view.photolist.ImageHandler
+import view.photolist.PhotoListScreen
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -115,5 +117,5 @@ fun Context.createImageFile(): File {
 }
 
 @Composable
-fun MainView() = CrackDetailScreen()
+fun MainView() = PhotoListScreen()
 

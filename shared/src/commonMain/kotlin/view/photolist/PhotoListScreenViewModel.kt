@@ -1,10 +1,12 @@
+package view.photolist
+
 import androidx.compose.ui.graphics.ImageBitmap
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import model.PhotoInfo
 
-class CameraViewViewModel : ViewModel() {
+class PhotoListScreenViewModel : ViewModel() {
 
     private val _photoInfos = MutableStateFlow<List<PhotoInfo>>(listOf())
     val photoInfos: StateFlow<List<PhotoInfo>> = _photoInfos

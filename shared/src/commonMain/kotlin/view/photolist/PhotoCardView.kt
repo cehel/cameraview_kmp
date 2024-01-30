@@ -1,3 +1,5 @@
+package view.photolist
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -19,7 +21,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import model.PhotoInfo
-import ui.rose
+import view.ui.rose
 
 @Composable
 fun PhotoCard(photo: PhotoInfo) {

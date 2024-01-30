@@ -1,3 +1,5 @@
+package view.photolist
+
 import androidx.compose.ui.graphics.ImageBitmap
 
 interface ImageHandler {

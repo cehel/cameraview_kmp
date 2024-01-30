@@ -1,3 +1,5 @@
+package view.photolist
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,11 +21,12 @@ import androidx.compose.ui.unit.dp
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
 import model.PhotoInfo
+import takePictureNativeView
 
 @Composable
-fun CrackDetailScreen() {
+fun PhotoListScreen() {
 
-    val viewModel = getViewModel(Unit, viewModelFactory { CameraViewViewModel() })
+    val viewModel = getViewModel(Unit, viewModelFactory { PhotoListScreenViewModel() })
 
     val showCamera by viewModel.showCameraView.collectAsState()
     val photos by viewModel.photoInfos.collectAsState()
@@ -41,7 +44,7 @@ fun CrackDetailScreen() {
         }
     }
 
-    CrackDetailContent(
+    PhotoListScreenContent(
         showCamera = showCamera,
         photos = photos,
         onOpenCameraButtonClicked = {
@@ -56,7 +59,7 @@ fun CrackDetailScreen() {
 }
 
 @Composable
-fun CrackDetailContent(
+fun PhotoListScreenContent(
     showCamera: Boolean,
     photos: List<PhotoInfo>,
     onOpenCameraButtonClicked: () -> Unit,
@@ -99,10 +102,4 @@ fun CameraScreen(
         takePictureNativeView(imageHandler, buttonClick)
     }
 }
-
-
-@Composable
-expect fun takePictureNativeView(imageHandler: ImageHandler, redraw: Int = 0)
-
-expect fun getPlatformName(): String
 
