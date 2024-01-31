@@ -13,7 +13,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,7 +24,7 @@ import model.PhotoInfo
 import view.ui.rose
 
 @Composable
-fun PhotoCard(photo: PhotoInfo) {
+fun PhotoCard(photo: PhotoInfo, deleteInfo: (PhotoInfo) -> Unit = {}) {
     Card(
         shape = RoundedCornerShape(14.dp),
         backgroundColor = Color.White,
@@ -37,22 +37,17 @@ fun PhotoCard(photo: PhotoInfo) {
                 bitmap = photo.image,
                 contentDescription = null
             )
-//            Image(
-//                painter = painterResource(id = flower.image),
-//                contentDescription = null,
-//                modifier = Modifier.size(140.dp),
-//            )
             Row(modifier = Modifier.padding(top = 20.dp)) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = photo.description,
+                        text = photo.descriptionBig,
                         style = TextStyle(
                             color = Color.Gray,
                             fontSize = 16.sp
                         )
                     )
                     Text(
-                        text = "xx",
+                        text = photo.descriptionSmall,
                         style = TextStyle(
                             color = rose,
                             fontSize = 16.sp
@@ -60,13 +55,14 @@ fun PhotoCard(photo: PhotoInfo) {
                     )
                 }
                 IconButton(
-                    onClick = { },
+                    onClick = { deleteInfo(photo) },
                     modifier = Modifier.background(
                         color = rose,
                         shape = RoundedCornerShape(10.dp)
                     )
                 ) {
-                    Icon(Icons.Default.Edit, tint = Color.White, contentDescription = null)
+
+                    Icon(Icons.Default.Delete, tint = Color.White, contentDescription = null)
                 }
             }
         }

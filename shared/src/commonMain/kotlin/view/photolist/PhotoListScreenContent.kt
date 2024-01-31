@@ -14,10 +14,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
+import data.PhotoItemRepository
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
 import model.PhotoInfo
@@ -26,10 +28,13 @@ import takePictureNativeView
 @Composable
 fun PhotoListScreen() {
 
-    val viewModel = getViewModel(Unit, viewModelFactory { PhotoListScreenViewModel() })
+    val viewModel = getViewModel(Unit, viewModelFactory {
+        PhotoListScreenViewModel(
+            PhotoItemRepository()
+        )
+    })
 
     val showCamera by viewModel.showCameraView.collectAsState()
-    val photos by viewModel.photoInfos.collectAsState()
 
     var buttonClick: Int by rememberSaveable {
         mutableStateOf<Int>(0)
@@ -46,7 +51,8 @@ fun PhotoListScreen() {
 
     PhotoListScreenContent(
         showCamera = showCamera,
-        photos = photos,
+        deletePhoto = viewModel::deletePhotoItem,
+        photos = viewModel.photoInfoList,
         onOpenCameraButtonClicked = {
             viewModel.showCameraView()
             buttonClick++
@@ -55,19 +61,19 @@ fun PhotoListScreen() {
         imageHandler = imageHandler
     )
 
-
 }
 
 @Composable
 fun PhotoListScreenContent(
     showCamera: Boolean,
-    photos: List<PhotoInfo>,
+    photos: SnapshotStateList<PhotoInfo>,
+    deletePhoto: (PhotoInfo) -> Unit = {},
     onOpenCameraButtonClicked: () -> Unit,
     buttonClick: Int,
     imageHandler: ImageHandler
 ) {
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        PhotoCardList(photos)
+        PhotoCardList(photos, deletePhoto)
         Button(onClick = {
             onOpenCameraButtonClicked.invoke()
         }) {
@@ -83,10 +89,13 @@ fun PhotoListScreenContent(
 }
 
 @Composable
-private fun PhotoCardList(photos: List<PhotoInfo>) {
+private fun PhotoCardList(
+    photos: SnapshotStateList<PhotoInfo>,
+    deletePhoto: (PhotoInfo) -> Unit = {}
+) {
     LazyRow {
         items(photos.size) {
-            PhotoCard(photos[it])
+            PhotoCard(photos[it], deletePhoto)
         }
     }
 }

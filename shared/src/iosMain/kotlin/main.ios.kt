@@ -9,16 +9,21 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asSkiaBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.interop.UIKitView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.ComposeUIViewController
 import kotlinx.cinterop.ExperimentalForeignApi
+import org.jetbrains.skia.EncodedImageFormat
 import org.jetbrains.skia.Image
 import platform.UIKit.UIView
 import platform.UIKit.UIViewController
 import view.photolist.ImageHandler
 import view.photolist.PhotoListScreen
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 
 actual fun getPlatformName(): String = "iOS"
@@ -35,6 +40,19 @@ actual fun takePictureNativeView(imageHandler: ImageHandler, redraw: Int) {
         modifier = Modifier.wrapContentSize()
             .border(2.dp, androidx.compose.ui.graphics.Color.Blue),
     )
+}
+
+@OptIn(ExperimentalEncodingApi::class)
+actual fun encodeImageToBase64(image: ImageBitmap): String? {
+    val byteArray =
+        Image.makeFromBitmap(image.asSkiaBitmap()).encodeToData(EncodedImageFormat.JPEG)?.bytes
+    return byteArray?.let { Base64.encode(it) }
+}
+
+@OptIn(ExperimentalEncodingApi::class)
+actual fun decodeBase64ToImage(base: String) : ImageBitmap {
+    val byteArray = Base64.decode(base)
+    return Image.makeFromEncoded(byteArray).toComposeImageBitmap()
 }
 
 fun passInByteArray(byteArray: ByteArray) {

@@ -2,10 +2,12 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Base64
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,6 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -27,6 +31,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import view.photolist.ImageHandler
 import view.photolist.PhotoListScreen
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -34,6 +39,18 @@ import java.util.Objects
 
 actual fun getPlatformName(): String = "Android"
 
+actual fun encodeImageToBase64(image: ImageBitmap): String? {
+    val baos = ByteArrayOutputStream()
+    val bitmap = image.asAndroidBitmap()
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+    val bytes = baos.toByteArray()
+    return Base64.encodeToString(bytes, Base64.DEFAULT)
+}
+
+actual fun decodeBase64ToImage(base: String): ImageBitmap {
+    val byteArray = Base64.decode(base, Base64.DEFAULT)
+    return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size).asImageBitmap()
+}
 
 @Composable
 actual fun takePictureNativeView(imageHandler: ImageHandler, redraw: Int) {
@@ -51,9 +68,9 @@ actual fun takePictureNativeView(imageHandler: ImageHandler, redraw: Int) {
         if (it) {
             capturedImageUri = uri
             if (capturedImageUri.path?.isNotEmpty() == true) {
-                val imageBitmap = loadImageBitmap(capturedImageUri, context)
-                imageBitmap?.let {
-                    imageHandler.onImageBitmapCaptured(imageBitmap.asImageBitmap())
+                val bitmap = loadImageBitmap(capturedImageUri, context)
+                bitmap?.let {
+                    imageHandler.onImageBitmapCaptured(bitmap.asImageBitmap())
                 }
             }
         } else {
